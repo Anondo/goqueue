@@ -38,7 +38,7 @@ func registerRoutes() {
 func resourceHandlers() http.Handler {
 	h := chi.NewRouter()
 	h.Group(func(r chi.Router) {
-		r.Put("/queue", requests.DeclearQueue)
+		r.Post("/queue", requests.DeclearQueue)
 		r.Post("/", requests.CreateJobRequest)
 	})
 

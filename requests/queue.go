@@ -13,13 +13,19 @@ type QueueRequest struct {
 }
 
 func DeclearQueue(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "PUT" {
+	if r.Method == "POST" {
 		qr := QueueRequest{}
 		helper.FailOnError(helper.ParseBody(r.Body, &qr), "Could not parse Queue Info")
 
-		resources.Q.Name = qr.Name
-		resources.Q.Capacity = qr.Capacity
+		nq := resources.Queue{
+			ID:       len(resources.QList) + 1,
+			Name:     qr.Name,
+			Capacity: qr.Capacity,
+			Jobs:     make(chan resources.Job, qr.Capacity),
+		}
 
-		log.Printf("Queue Declared With Name:%s & Capacity:%d\n", resources.Q.Name, resources.Q.Capacity)
+		resources.AddQueue(nq)
+
+		log.Printf("Queue Declared With Name:%s & Capacity:%d\n", qr.Name, qr.Capacity)
 	}
 }

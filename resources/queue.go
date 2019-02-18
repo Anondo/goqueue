@@ -3,6 +3,7 @@ package resources
 import (
 	"fmt"
 	"goqueue/helper"
+	"log"
 )
 
 type Queue struct {
@@ -13,13 +14,13 @@ type Queue struct {
 }
 
 var (
-	Q Queue
+	QList []Queue
 )
 
 func Init() {
-	Q.Name = "default_queue"
-	Q.Capacity = 100
-	Q.Jobs = make(chan Job, Q.Capacity)
+
+	InitDefaultQueue()
+
 }
 
 func (q *Queue) PushTask(jn string, args []interface{}) {
@@ -33,11 +34,42 @@ func (q *Queue) PushTask(jn string, args []interface{}) {
 	q.Jobs <- j
 
 	prpl := "\033[35m" // purple
-	msg := fmt.Sprintf("Job Received: {Name: %s Args: %v}\nTotal Jobs: %d", j.JobName, j.Args, len(q.Jobs))
+	msg := fmt.Sprintf("Job Received: {Name: %s Args: %v}", j.JobName, j.Args)
+	helper.ColorLog(prpl, msg)
 
-	txt := fmt.Sprintf(`{
-				%s
-		}`, msg)
-	helper.ColorLog(prpl, txt)
+	msg = fmt.Sprintf("Queue: %s", q.Name)
+	helper.ColorLog(prpl, msg)
 
+	msg = fmt.Sprintf("Total Jobs: %d", len(q.Jobs))
+	helper.ColorLog(prpl, msg)
+
+	msg = fmt.Sprintf("Queue Capacity: %d", q.Capacity)
+	helper.ColorLog(prpl, msg)
+
+	fmt.Println("--------------------------------------------")
+
+}
+
+func InitDefaultQueue() {
+	q := Queue{
+		ID:       1,
+		Name:     "default_queue",
+		Capacity: 1000,
+	}
+	q.Jobs = make(chan Job, q.Capacity)
+	QList = append(QList, q)
+}
+
+func AddQueue(q Queue) {
+	QList = append(QList, q)
+}
+
+func AddTask(qn, jn string, args []interface{}) {
+	for _, q := range QList {
+		if q.Name == qn {
+			q.PushTask(jn, args)
+			return
+		}
+	}
+	log.Println("No queue named", qn)
 }

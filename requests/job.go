@@ -7,8 +7,9 @@ import (
 )
 
 type JobCreateRequest struct {
-	Task string        `json:"task"`
-	Args []interface{} `json:"args"`
+	Task  string        `json:"task"`
+	Args  []interface{} `json:"args"`
+	QName string        `json:"qname"`
 }
 
 func CreateJobRequest(w http.ResponseWriter, r *http.Request) {
@@ -16,6 +17,10 @@ func CreateJobRequest(w http.ResponseWriter, r *http.Request) {
 		j := JobCreateRequest{}
 		helper.FailOnError(helper.ParseBody(r.Body, &j), "Failed to Create Job")
 
-		resources.Q.PushTask(j.Task, j.Args)
+		if j.QName == "" {
+			j.QName = "default_queue"
+		}
+
+		resources.AddTask(j.QName, j.Task, j.Args)
 	}
 }
