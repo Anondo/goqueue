@@ -1,12 +1,14 @@
 package cmd
 
 import (
+	"fmt"
 	"goqueue/helper"
+	"goqueue/resources"
 	"goqueue/server"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -35,10 +37,14 @@ func startServer(cmd *cobra.Command, args []string) {
 		helper.FailOnError(server.Serve(), "Failed to start goqueue server")
 	}()
 
-	helper.ServerStartLog()
-	log.Printf("GoQueue Server running at localhost:%d\n", viper.GetInt("port"))
+	fmt.Println("Starting GoQueue server...")
+
+	time.Sleep(1 * time.Second)
+
+	helper.ServerStartLog(len(resources.QList))
+	helper.ColorLog("\033[1;32m", fmt.Sprintf("GoQueue Server running at localhost:%d\n", viper.GetInt("port")))
 
 	<-stop
 
-	log.Println("GoQueue Server Gracefully Shutdown")
+	helper.ColorLog("\033[1;32m", "GoQueue Server Gracefully Shutdown")
 }

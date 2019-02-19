@@ -1,9 +1,9 @@
 package requests
 
 import (
+	"fmt"
 	"goqueue/helper"
 	"goqueue/resources"
-	"log"
 	"net/http"
 )
 
@@ -15,7 +15,11 @@ type QueueRequest struct {
 func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		qr := QueueRequest{}
-		helper.FailOnError(helper.ParseBody(r.Body, &qr), "Could not parse Queue Info")
+		helper.LogOnError(helper.ParseBody(r.Body, &qr), "Could not parse Queue Info")
+
+		if qr.Name == "" {
+			return
+		}
 
 		nq := resources.Queue{
 			ID:       len(resources.QList) + 1,
@@ -26,6 +30,6 @@ func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 
 		resources.AddQueue(nq)
 
-		log.Printf("Queue Declared With Name:%s & Capacity:%d\n", qr.Name, qr.Capacity)
+		helper.ColorLog("\033[35m", fmt.Sprintf("Queue Declared: {Name:%s & Capacity:%d}\n", qr.Name, qr.Capacity))
 	}
 }

@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"fmt"
 	"goqueue/helper"
 	"log"
 )
@@ -33,20 +32,7 @@ func (q *Queue) PushTask(jn string, args []interface{}) {
 
 	q.Jobs <- j
 
-	prpl := "\033[35m" // purple
-	msg := fmt.Sprintf("Job Received: {Name: %s Args: %v}", j.JobName, j.Args)
-	helper.ColorLog(prpl, msg)
-
-	msg = fmt.Sprintf("Queue: %s", q.Name)
-	helper.ColorLog(prpl, msg)
-
-	msg = fmt.Sprintf("Total Jobs: %d", len(q.Jobs))
-	helper.ColorLog(prpl, msg)
-
-	msg = fmt.Sprintf("Queue Capacity: %d", q.Capacity)
-	helper.ColorLog(prpl, msg)
-
-	fmt.Println("--------------------------------------------")
+	helper.JobReceiveLog(j.JobName, q.Name, len(q.Jobs), q.Capacity, j.Args)
 
 }
 
@@ -61,7 +47,14 @@ func InitDefaultQueue() {
 }
 
 func AddQueue(q Queue) {
+	for _, v := range QList {
+		if q.Name == v.Name {
+			v = q
+			return
+		}
+	}
 	QList = append(QList, q)
+	return
 }
 
 func AddTask(qn, jn string, args []interface{}) {

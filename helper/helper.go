@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"strconv"
 )
 
 const (
@@ -25,7 +26,12 @@ const (
 
 func FailOnError(err error, errMsg string) {
 	if err != nil {
-		log.Fatalf("%s: %s\n", err.Error(), errMsg)
+		log.Fatal("\033[31m", fmt.Sprintf("%s: %s\n", err.Error(), errMsg), "\033[0m")
+	}
+}
+func LogOnError(err error, errMsg string) {
+	if err != nil {
+		log.Println("\033[31m", fmt.Sprintf("%s: %s\n", err.Error(), errMsg), "\033[0m")
 	}
 }
 
@@ -38,13 +44,32 @@ func ColorLog(color, msg string) {
 	log.Println(color, msg, nc)
 }
 
-func ServerStartLog() {
+func ServerStartLog(qnum int) {
 	yellow := "\033[1;33m"
 	nc := "\033[0m"
 	fmt.Println(yellow, Logo, nc)
 	author := "Author: Ahmad Anondo"
 	source := "Source: https://www.github.com/Anondo/goqueue"
-	fmt.Printf("| |\n| |\n| |%s\n| |\n| |\n| |%s\n| |\n| |\n| |\n| |\n| |\n| |\n| |\n| |\n| |\n| |\n| |\n| |\n| |\n",
-		author, source)
+	status := "Status: Running"
+	qno := "Number of queue: " + strconv.Itoa(qnum) + " (including default_queue)"
+	fmt.Printf("| |\n| |\n| |%s\n| |\n| |\n| |%s\n| |\n| |\n| |%s\n| |\n| |\n| |%s\n| |\n| |\n| |\n| |\n| |\n| |\n| |\n",
+		author, source, status, qno)
 
+}
+
+func JobReceiveLog(jn, qn string, nj, c int, a interface{}) {
+	prpl := "\033[35m" // purple
+	msg := fmt.Sprintf("Job Received: {Name: %s Args: %v}", jn, a)
+	ColorLog(prpl, msg)
+
+	msg = fmt.Sprintf("Queue: %s", qn)
+	ColorLog(prpl, msg)
+
+	msg = fmt.Sprintf("Total Jobs: %d", nj)
+	ColorLog(prpl, msg)
+
+	msg = fmt.Sprintf("Queue Capacity: %d", c)
+	ColorLog(prpl, msg)
+
+	fmt.Println("--------------------------------------------")
 }
