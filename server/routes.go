@@ -1,7 +1,7 @@
 package server
 
 import (
-	"goqueue/requests"
+	"goqueue/api"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -38,8 +38,9 @@ func registerRoutes() {
 func resourceHandlers() http.Handler {
 	h := chi.NewRouter()
 	h.Group(func(r chi.Router) {
-		r.Post("/queue", requests.DeclearQueue)
-		r.Post("/", requests.CreateJobRequest)
+		r.Post("/queue", api.DeclearQueue)
+		r.Post("/", api.CreateJobRequest)
+		r.Get("/queue", api.GetQueueList)
 	})
 
 	return h

@@ -1,4 +1,4 @@
-package requests
+package api
 
 import (
 	"goqueue/helper"

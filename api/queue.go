@@ -1,6 +1,7 @@
-package requests
+package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"goqueue/helper"
 	"goqueue/resources"
@@ -31,5 +32,27 @@ func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 		resources.AddQueue(nq)
 
 		helper.ColorLog("\033[35m", fmt.Sprintf("Queue Declared: {Name:%s & Capacity:%d}\n", qr.Name, qr.Capacity))
+	}
+}
+
+type QueueListResponse struct {
+	QNames []string `json:"qnames"`
+}
+
+func GetQueueList(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		qlr := QueueListResponse{}
+
+		for _, q := range resources.QList {
+			qlr.QNames = append(qlr.QNames, q.Name)
+		}
+
+		b, err := json.Marshal(qlr)
+
+		if err != nil {
+			helper.FailOnError(err, "Could not decode response")
+		}
+
+		fmt.Fprintf(w, "%s", string(b))
 	}
 }

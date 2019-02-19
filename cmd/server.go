@@ -25,7 +25,7 @@ var (
 func init() {
 	ServerCmd.Flags().IntP("port", "p", 1894, "The port to run the goqueue server on")
 	viper.BindPFlag("port", ServerCmd.Flags().Lookup("port"))
-	RootCmd.AddCommand(ServerCmd)
+
 }
 
 func startServer(cmd *cobra.Command, args []string) {
