@@ -49,7 +49,6 @@ func InitDefaultQueue() {
 func AddQueue(q Queue) {
 	for _, v := range QList {
 		if q.Name == v.Name {
-			v = q
 			return
 		}
 	}
