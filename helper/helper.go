@@ -58,6 +58,7 @@ func ServerStartLog(qnum int) {
 }
 
 func JobReceiveLog(jn, qn string, nj, c int, a interface{}) {
+	fmt.Println("--------------------------------------------")
 	prpl := "\033[35m" // purple
 	msg := fmt.Sprintf("Job Received: {Name: %s Args: %v}", jn, a)
 	ColorLog(prpl, msg)

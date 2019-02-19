@@ -13,4 +13,5 @@ var (
 
 func init() {
 	QueueCmd.AddCommand(ListCmd)
+	QueueCmd.AddCommand(RmCmd)
 }

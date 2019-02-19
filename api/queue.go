@@ -6,6 +6,8 @@ import (
 	"goqueue/helper"
 	"goqueue/resources"
 	"net/http"
+
+	"github.com/go-chi/chi"
 )
 
 type QueueRequest struct {
@@ -14,7 +16,7 @@ type QueueRequest struct {
 }
 
 func DeclearQueue(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
+	if r.Method == http.MethodPost {
 		qr := QueueRequest{}
 		helper.LogOnError(helper.ParseBody(r.Body, &qr), "Could not parse Queue Info")
 
@@ -40,7 +42,7 @@ type QueueListResponse struct {
 }
 
 func GetQueueList(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
+	if r.Method == http.MethodGet {
 		qlr := QueueListResponse{}
 
 		for _, q := range resources.QList {
@@ -54,5 +56,41 @@ func GetQueueList(w http.ResponseWriter, r *http.Request) {
 		}
 
 		fmt.Fprintf(w, "%s", string(b))
+	}
+}
+
+type QueueDeleteResponse struct {
+	RMsg string `json:"response_message"`
+}
+
+func DeleteQueue(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodDelete {
+		qn := chi.URLParam(r, "qname")
+
+		found := false
+		for i, q := range resources.QList {
+			if q.Name == qn {
+				resources.QList = append(resources.QList[:i], resources.QList[i+1:]...)
+				found = true
+				break
+			}
+		}
+		qdr := QueueDeleteResponse{}
+		if found {
+			qdr.RMsg = "Queue Deleted Successfully"
+		} else {
+			qdr.RMsg = "No Queue called: " + qn + " found"
+		}
+
+		b, err := json.Marshal(qdr)
+
+		if err != nil {
+			helper.FailOnError(err, "Could not decode response")
+		}
+
+		helper.ColorLog("\033[35m", fmt.Sprintf("Queue Deleted: %s\n", qn))
+
+		fmt.Fprintf(w, "%s", string(b))
+
 	}
 }

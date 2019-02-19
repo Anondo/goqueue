@@ -13,7 +13,7 @@ type JobCreateRequest struct {
 }
 
 func CreateJobRequest(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
+	if r.Method == http.MethodPost {
 		j := JobCreateRequest{}
 		helper.LogOnError(helper.ParseBody(r.Body, &j), "Failed to Create Job")
 
