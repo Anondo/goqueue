@@ -7,10 +7,15 @@ import (
 	"net/http"
 )
 
+type Arguments struct {
+	Value interface{} `json:"value"`
+	Type  string      `json:"type"`
+}
+
 type Job struct {
-	ID      int           `json:"id"`
-	JobName string        `json:"job_name"`
-	Args    []interface{} `json:"args"`
+	ID      int         `json:"id"`
+	JobName string      `json:"job_name"`
+	Args    []Arguments `json:"args"`
 }
 
 func SendJob(w http.ResponseWriter, qn, wn, hn string) {

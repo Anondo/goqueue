@@ -29,7 +29,7 @@ func Init() {
 
 }
 
-func (q *Queue) PushTask(jn string, args []interface{}) {
+func (q *Queue) PushTask(jn string, args []Arguments) {
 	j := Job{
 		ID:      len(q.Jobs) + 1,
 		JobName: jn,
@@ -62,7 +62,7 @@ func AddQueue(q Queue) {
 	return
 }
 
-func AddTask(qn, jn string, args []interface{}) {
+func AddTask(qn, jn string, args []Arguments) {
 	for _, q := range QList {
 		if q.Name == qn {
 			q.PushTask(jn, args)
@@ -109,7 +109,7 @@ func GetAck(q *Queue, hn, wn string) (bool, error) {
 			resp, _ := c.Do(req)
 
 			if resp != nil {
-				helper.ColorLog("\033[35m", fmt.Sprintf("Received acknowledged from consumer:%s", wn))
+				helper.ColorLog("\033[35m", fmt.Sprintf("Received acknowledgement from consumer:%s", wn))
 				return true, nil
 			}
 

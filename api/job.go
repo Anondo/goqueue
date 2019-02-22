@@ -9,9 +9,9 @@ import (
 )
 
 type JobCreateRequest struct {
-	Task  string        `json:"task"`
-	Args  []interface{} `json:"args"`
-	QName string        `json:"qname"`
+	Task  string                `json:"task"`
+	Args  []resources.Arguments `json:"args"`
+	QName string                `json:"qname"`
 }
 
 func CreateJobRequest(w http.ResponseWriter, r *http.Request) {
