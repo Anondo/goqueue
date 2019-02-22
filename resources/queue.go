@@ -35,11 +35,11 @@ func (q *Queue) PushTask(jn string, args []interface{}) {
 		JobName: jn,
 		Args:    args,
 	}
-	// helper.FailOnError(j.ProcessJob(f, args), "Failed to push task")
 
+	jl := len(q.Jobs) + 1
 	q.Jobs <- j
 
-	helper.JobReceiveLog(j.JobName, q.Name, len(q.Jobs), q.Capacity, j.Args)
+	helper.JobReceiveLog(j.JobName, q.Name, jl, q.Capacity, j.Args)
 
 }
 
