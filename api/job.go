@@ -4,6 +4,8 @@ import (
 	"goqueue/helper"
 	"goqueue/resources"
 	"net/http"
+
+	"github.com/go-chi/chi"
 )
 
 type JobCreateRequest struct {
@@ -27,4 +29,21 @@ func CreateJobRequest(w http.ResponseWriter, r *http.Request) {
 
 		resources.AddTask(j.QName, j.Task, j.Args)
 	}
+}
+
+func FetchJobRequest(w http.ResponseWriter, r *http.Request) {
+	qn := chi.URLParam(r, "queue_name")
+	wn := r.URL.Query().Get("sname")
+
+	if qn == "" || !resources.QueueExists(qn) {
+		return
+	}
+
+	hn := r.URL.Hostname()
+	if hn == "" {
+		hn = "localhost"
+	}
+
+	resources.SendJob(w, qn, wn, hn)
+
 }

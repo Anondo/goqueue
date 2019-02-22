@@ -32,8 +32,6 @@ func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 		}
 
 		resources.AddQueue(nq)
-
-		helper.ColorLog("\033[35m", fmt.Sprintf("Queue Declared: {Name:%s & Capacity:%d}\n", qr.Name, qr.Capacity))
 	}
 }
 
@@ -91,6 +89,12 @@ func DeleteQueue(w http.ResponseWriter, r *http.Request) {
 		helper.ColorLog("\033[35m", fmt.Sprintf("Queue Deleted: %s\n", qn))
 
 		fmt.Fprintf(w, "%s", string(b))
+
+	}
+}
+
+func RegisterTaskRequest(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPut {
 
 	}
 }

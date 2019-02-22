@@ -42,6 +42,8 @@ func resourceHandlers() http.Handler {
 		r.Post("/", api.CreateJobRequest)
 		r.Get("/queue", api.GetQueueList)
 		r.Delete("/queue/{qname}", api.DeleteQueue)
+		r.Get("/queue/{queue_name}", api.FetchJobRequest)
+		r.Post("/subscribe", api.SubscribeRequest)
 	})
 
 	return h

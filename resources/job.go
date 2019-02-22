@@ -1,30 +1,37 @@
 package resources
 
+import (
+	"encoding/json"
+	"fmt"
+	"goqueue/helper"
+	"net/http"
+)
+
 type Job struct {
-	ID      int
+	ID      int           `json:"id"`
 	JobName string        `json:"job_name"`
 	Args    []interface{} `json:"args"`
 }
 
-// func (j *Job) Execute() {
-// 	j.F.Call(j.Args)
-// }
+func SendJob(w http.ResponseWriter, qn, wn, hn string) {
+	q := GetQueueByName(qn)
+	if q != nil {
 
-//
-// func (j *Job) ProcessJob(f interface{}, args ...interface{}) error {
-// 	j.F = reflect.ValueOf(f)
-// 	j.FType = reflect.TypeOf(f)
-//
-// 	if j.FType.NumIn() != len(args) {
-// 		return errors.New("Invalid Number Of Arguments For Job")
-// 	}
-//
-// 	for i, arg := range args {
-// 		if reflect.TypeOf(arg) != j.FType.In(i) {
-// 			return fmt.Errorf("Argmunet Type Mismatch: Expected %v, Got %v", j.FType.In(i), reflect.ValueOf(arg))
-// 		}
-// 		j.Args = append(j.Args, reflect.ValueOf(arg))
-// 	}
-//
-// 	return nil
-// }
+		helper.ColorLog("\033[35m", fmt.Sprintf("Subscriber:%s is ready to fetch jobs", wn))
+
+		j := <-q.Jobs
+		ackd, _ := GetAck(q, hn, wn) // TODO: fix the current requeuing
+		if !ackd {
+			q.Jobs <- j
+			return
+		}
+		b, err := json.Marshal(j)
+		if err != nil {
+			helper.FailOnError(err, "Could not decode job")
+		}
+		fmt.Fprintf(w, "%s", string(b))
+
+		helper.ColorLog("\033[35m", fmt.Sprintf("Job:{Name:%s Args:%v} fetched by %s", j.JobName, j.Args, wn))
+
+	}
+}
