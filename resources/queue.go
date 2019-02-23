@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"goqueue/helper"
 	"log"
@@ -41,6 +42,15 @@ func (q *Queue) PushTask(jn string, args []Arguments) {
 
 	helper.JobReceiveLog(j.JobName, q.Name, jl, q.Capacity, j.Args)
 
+}
+
+func (q *Queue) IsTaskRegistered(tn string) bool {
+	for _, t := range q.RegisteredTaskNames {
+		if tn == t {
+			return true
+		}
+	}
+	return false
 }
 
 func InitDefaultQueue() {
@@ -116,6 +126,16 @@ func GetAck(q *Queue, hn, wn string) (bool, error) {
 			break
 		}
 	}
-
+	helper.ColorLog("\033[35m", fmt.Sprintf("No acknowledgement from consumer:%s", wn))
 	return false, nil
+}
+
+func RegisterTasks(qn string, tns []string) error {
+	q := GetQueueByName(qn)
+	if q != nil {
+		q.RegisteredTaskNames = append(q.RegisteredTaskNames, tns...)
+		helper.ColorLog("\033[35m", fmt.Sprintf("Successfully registered tasks:%v", tns))
+		return nil
+	}
+	return errors.New("No Such Queue")
 }

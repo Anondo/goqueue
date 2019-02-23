@@ -25,9 +25,9 @@ func SendJob(w http.ResponseWriter, qn, wn, hn string) {
 		helper.ColorLog("\033[35m", fmt.Sprintf("Subscriber:%s is ready to fetch jobs", wn))
 
 		j := <-q.Jobs
-		ackd, _ := GetAck(q, hn, wn) // TODO: fix the current requeuing
-		if !ackd {
-			q.Jobs <- j
+		ackd, _ := GetAck(q, hn, wn)
+		if !ackd || !q.IsTaskRegistered(j.JobName) { // TODO: Tasks are now registered regardless of the subscriber,need to fix this
+			q.Jobs <- j // TODO: need to fix the current requeuing
 			return
 		}
 		b, err := json.Marshal(j)

@@ -93,8 +93,21 @@ func DeleteQueue(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type RegTaskReq struct {
+	TaskNames []string `json:"task_names"`
+	QName     string   `json:"qname"`
+}
+
 func RegisterTaskRequest(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodPut {
+	if r.Method == http.MethodPost {
+		rtr := RegTaskReq{}
+		if err := helper.ParseBody(r.Body, &rtr); err != nil {
+			helper.LogOnError(err, "Could not parse registration request body")
+		}
+
+		if err := resources.RegisterTasks(rtr.QName, rtr.TaskNames); err != nil {
+			helper.LogOnError(err, "Failed to register tasks")
+		}
 
 	}
 }
