@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/spf13/viper"
 )
 
 type JobCreateRequest struct {
@@ -20,7 +21,7 @@ func CreateJobRequest(w http.ResponseWriter, r *http.Request) {
 		helper.LogOnError(helper.ParseBody(r.Body, &j), "Failed to Create Job")
 
 		if j.QName == "" {
-			j.QName = "default_queue"
+			j.QName = viper.GetString("default.queue_name")
 		}
 
 		if j.Task == "" {

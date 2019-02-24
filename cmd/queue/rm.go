@@ -36,8 +36,8 @@ func removeQueue(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	if qn == "default_queue" {
-		helper.ColorLog("\033[31m", "Cannot delete default_queue")
+	if qn == viper.GetString("default.queue_name") {
+		helper.ColorLog("\033[31m", "Cannot delete "+viper.GetString("default.queue_name"))
 		return
 	}
 
@@ -57,7 +57,7 @@ func removeQueue(cmd *cobra.Command, args []string) {
 	}
 
 	client := http.Client{}
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), viper.GetDuration("requests.timeout")*time.Second)
 	defer cancel()
 	req = req.WithContext(ctx)
 	resp, err := client.Do(req)

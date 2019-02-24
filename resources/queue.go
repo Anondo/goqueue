@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type Queue struct {
@@ -56,8 +58,8 @@ func (q *Queue) IsTaskRegistered(tn string) bool {
 func InitDefaultQueue() {
 	q := Queue{
 		ID:       1,
-		Name:     "default_queue",
-		Capacity: 1000,
+		Name:     viper.GetString("default.queue_name"),
+		Capacity: viper.GetInt("default.queue_capacity"),
 	}
 	q.Jobs = make(chan Job, q.Capacity)
 	QList = append(QList, q)
@@ -110,7 +112,7 @@ func GetAck(q *Queue, hn, wn string) (bool, error) {
 				return false, nil
 			}
 
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), viper.GetDuration("requests.timeout")*time.Second)
 			req = req.WithContext(ctx)
 
 			defer cancel()

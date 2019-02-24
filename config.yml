@@ -1,0 +1,7 @@
+default:
+  queue_name: "default_queue"
+  queue_capacity: 2000
+  port:  1894
+
+requests:
+  timeout: 5 #seconds

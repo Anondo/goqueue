@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"strconv"
+
+	"github.com/spf13/viper"
 )
 
 const (
@@ -51,7 +53,7 @@ func ServerStartLog(qnum int) {
 	author := "Author: Ahmad Anondo"
 	source := "Source: https://www.github.com/Anondo/goqueue"
 	status := "Status: Running"
-	qno := "Number of queue: " + strconv.Itoa(qnum) + " (including default_queue)"
+	qno := "Number of queue: " + strconv.Itoa(qnum) + " (including " + viper.GetString("default.queue_name") + ")"
 	fmt.Printf("| |\n| |\n| |%s\n| |\n| |\n| |%s\n| |\n| |\n| |%s\n| |\n| |\n| |%s\n| |\n| |\n| |\n| |\n| |\n| |\n| |\n",
 		author, source, status, qno)
 

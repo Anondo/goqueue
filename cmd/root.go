@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"goqueue/cmd/queue"
+	"goqueue/config"
 	"goqueue/helper"
 	"goqueue/resources"
 
@@ -17,6 +18,7 @@ var (
 )
 
 func init() {
+	config.Init()
 	resources.Init()
 	RootCmd.AddCommand(ServerCmd)
 	RootCmd.AddCommand(queue.QueueCmd)

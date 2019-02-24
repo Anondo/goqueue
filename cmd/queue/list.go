@@ -36,7 +36,7 @@ func listQueue(cmd *cobra.Command, args []string) {
 	}
 
 	client := http.Client{}
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), viper.GetDuration("requests.timeout")*time.Second)
 	defer cancel()
 	req = req.WithContext(ctx)
 	resp, err := client.Do(req)
