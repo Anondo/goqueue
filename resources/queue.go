@@ -135,8 +135,13 @@ func GetAck(q *Queue, hn, wn string) (bool, error) {
 func RegisterTasks(qn string, tns []string) error {
 	q := GetQueueByName(qn)
 	if q != nil {
-		q.RegisteredTaskNames = append(q.RegisteredTaskNames, tns...)
-		helper.ColorLog("\033[35m", fmt.Sprintf("Successfully registered tasks:%v", tns))
+		for _, tn := range tns {
+			if !q.IsTaskRegistered(tn) {
+				q.RegisteredTaskNames = append(q.RegisteredTaskNames, tn)
+				helper.ColorLog("\033[35m", fmt.Sprintf("Successfully registered task:%v", tn))
+			}
+		}
+
 		return nil
 	}
 	return errors.New("No Such Queue")
