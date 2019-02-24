@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"goqueue/helper"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -44,7 +45,7 @@ func removeQueue(cmd *cobra.Command, args []string) {
 	fmt.Printf("Are you sure you want to delete the queue:%s?(y/n): ", qn)
 	fmt.Scanf("%s", &sure)
 
-	if sure == "n" || sure == "N" || sure == "" {
+	if sure != "y" && sure != "Y" {
 		return
 	}
 
@@ -61,7 +62,8 @@ func removeQueue(cmd *cobra.Command, args []string) {
 	req = req.WithContext(ctx)
 	resp, err := client.Do(req)
 	if err != nil {
-		helper.FailOnError(err, "Could not make request for deleting queue")
+		log.Fatal("\033[31m", "Could not make request for deleting queue, make sure the GoQueue server is running",
+			"\033[0m")
 	}
 
 	var r struct {

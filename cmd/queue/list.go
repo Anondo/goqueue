@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"goqueue/helper"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -39,8 +40,9 @@ func listQueue(cmd *cobra.Command, args []string) {
 	defer cancel()
 	req = req.WithContext(ctx)
 	resp, err := client.Do(req)
-	if err != nil {
-		helper.FailOnError(err, "Could not make request for list of queues")
+	if err != nil { //not using helper.FailOnError to hide the details of the error
+		log.Fatal("\033[31m", "Could not make request for list of queues, make sure the GoQueue server is running",
+			"\033[0m")
 	}
 
 	if resp.StatusCode != http.StatusOK {
