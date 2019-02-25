@@ -4,6 +4,7 @@ import (
 	"goqueue/helper"
 	"goqueue/resources"
 	"net/http"
+	"strings"
 )
 
 type SubscribeResp struct {
@@ -19,7 +20,7 @@ func SubscribeRequest(w http.ResponseWriter, r *http.Request) {
 
 		helper.LogOnError(helper.ParseBody(r.Body, &sr), "Could not parse subscribe request")
 
-		h := r.URL.Hostname()
+		h := strings.Split(r.Host, ":")[0]
 		if h == "" {
 			h = "localhost"
 		}
