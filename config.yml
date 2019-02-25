@@ -5,3 +5,6 @@ default:
 
 requests:
   timeout: 5 #seconds
+
+persistance:
+  filename: "data/queue.json"

@@ -20,6 +20,7 @@ type Queue struct {
 	Capacity            int
 	RegisteredTaskNames []string
 	Subscribers         []*Subscriber
+	Durable             bool
 }
 
 var (
@@ -27,8 +28,9 @@ var (
 )
 
 func Init() {
-
+	durableFileName = viper.GetString("persistance.filename")
 	InitDefaultQueue()
+	initPersistedQueues()
 
 }
 
@@ -70,6 +72,9 @@ func AddQueue(q Queue) {
 		return
 	}
 	QList = append(QList, q)
+	if q.Durable {
+		helper.FailOnError(q.persistQueue(), "Could not persist queue:"+q.Name)
+	}
 	helper.ColorLog("\033[35m", fmt.Sprintf("Queue Declared: {Name:%s & Capacity:%d}\n", q.Name, q.Capacity))
 	return
 }

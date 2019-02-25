@@ -13,6 +13,7 @@ import (
 type QueueRequest struct {
 	Name     string `json:"name"`
 	Capacity int    `json:"cap"`
+	Durable  bool   `json:"durable"`
 }
 
 func DeclearQueue(w http.ResponseWriter, r *http.Request) {
@@ -29,6 +30,7 @@ func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 			Name:     qr.Name,
 			Capacity: qr.Capacity,
 			Jobs:     make(chan resources.Job, qr.Capacity),
+			Durable:  qr.Durable,
 		}
 
 		resources.AddQueue(nq)
@@ -69,6 +71,7 @@ func DeleteQueue(w http.ResponseWriter, r *http.Request) {
 		for i, q := range resources.QList {
 			if q.Name == qn {
 				resources.QList = append(resources.QList[:i], resources.QList[i+1:]...)
+				// resources.RemovePersistedQueue(qn) // TODO: need to fix this function
 				found = true
 				break
 			}
