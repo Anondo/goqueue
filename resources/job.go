@@ -34,6 +34,7 @@ func SendJob(w http.ResponseWriter, qn, wn, hn string) {
 		if err != nil {
 			helper.FailOnError(err, "Could not decode job")
 		}
+		helper.FailOnError(q.removeDurableJob(j), "Could not remove persistant job")
 		fmt.Fprintf(w, "%s", string(b))
 
 		helper.ColorLog("\033[35m", fmt.Sprintf("Job:{Name:%s Args:%v} fetched by %s", j.JobName, j.Args, wn))

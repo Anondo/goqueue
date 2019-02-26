@@ -44,6 +44,8 @@ func (q *Queue) PushTask(jn string, args []Arguments) {
 	jl := len(q.Jobs) + 1
 	q.Jobs <- j
 
+	helper.FailOnError(q.addDurableJob(j), "Could not persist job")
+
 	helper.JobReceiveLog(j.JobName, q.Name, jl, q.Capacity, j.Args)
 
 }
@@ -143,6 +145,7 @@ func RegisterTasks(qn string, tns []string) error {
 		for _, tn := range tns {
 			if !q.IsTaskRegistered(tn) {
 				q.RegisteredTaskNames = append(q.RegisteredTaskNames, tn)
+				helper.FailOnError(q.addDurableRegTask(tn), "Failed to persist task")
 				helper.ColorLog("\033[35m", fmt.Sprintf("Successfully registered task:%v", tn))
 			}
 		}

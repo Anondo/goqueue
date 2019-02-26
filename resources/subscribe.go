@@ -3,9 +3,9 @@ package resources
 import "goqueue/helper"
 
 type Subscriber struct {
-	Host  string
-	Port  int
-	CName string
+	Host  string `json:"host"`
+	Port  int    `json:"port"`
+	CName string `json:"cname"`
 }
 
 func SubscribeConsumer(h string, p int, qn, wn string) {
@@ -17,11 +17,13 @@ func SubscribeConsumer(h string, p int, qn, wn string) {
 				return
 			}
 		}
-		q.Subscribers = append(q.Subscribers, &Subscriber{
+		s := &Subscriber{
 			Host:  h,
 			Port:  p,
 			CName: wn,
-		})
+		}
+		q.Subscribers = append(q.Subscribers, s)
+		helper.FailOnError(q.addDurableSubscriber(s), "Failed to persist subscriber")
 	}
 
 	helper.ColorLog("\033[35m", "Successfully subscribed:"+wn)
