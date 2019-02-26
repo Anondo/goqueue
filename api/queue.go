@@ -71,7 +71,7 @@ func DeleteQueue(w http.ResponseWriter, r *http.Request) {
 		for i, q := range resources.QList {
 			if q.Name == qn {
 				resources.QList = append(resources.QList[:i], resources.QList[i+1:]...)
-				// resources.RemovePersistedQueue(qn) // TODO: need to fix this function
+				resources.RemovePersistedQueue(qn)
 				found = true
 				break
 			}

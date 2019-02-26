@@ -3,7 +3,6 @@ package resources
 import (
 	"encoding/json"
 	"io/ioutil"
-	"os"
 )
 
 var (
@@ -74,14 +73,8 @@ func (q *Queue) persistQueue() error {
 
 	jql = append(jql, jq)
 
-	json_file, err := os.OpenFile(durableFileName, os.O_RDWR, 0644)
-	if err != nil {
-		return err
-	}
-	if err := json.NewEncoder(json_file).Encode(jql); err != nil {
-		return err
-	}
-	return json_file.Close()
+	b, _ := json.Marshal(jql)
+	return ioutil.WriteFile(durableFileName, b, 0644)
 
 }
 
@@ -101,14 +94,8 @@ func RemovePersistedQueue(qn string) error {
 	for i, jq := range jql {
 		if jq.Name == qn {
 			jql = append(jql[:i], jql[i+1:]...)
-			json_file, err := os.OpenFile(durableFileName, os.O_RDWR, 0644)
-			if err != nil {
-				return err
-			}
-			if err := json.NewEncoder(json_file).Encode(jql); err != nil {
-				return err
-			}
-			return json_file.Close()
+			b, _ := json.Marshal(jql)
+			return ioutil.WriteFile(durableFileName, b, 0644)
 		}
 	}
 	return nil
