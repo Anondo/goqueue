@@ -1,6 +1,8 @@
 package resources
 
-import "goqueue/helper"
+import (
+	"goqueue/helper"
+)
 
 type Subscriber struct {
 	Host  string `json:"host"`

@@ -20,8 +20,8 @@ func SubscribeRequest(w http.ResponseWriter, r *http.Request) {
 
 		helper.LogOnError(helper.ParseBody(r.Body, &sr), "Could not parse subscribe request")
 
-		h := strings.Split(r.Host, ":")[0]
-		if h == "" {
+		h := strings.Split(r.RemoteAddr, ":")[0]
+		if h == "[" {
 			h = "localhost"
 		}
 

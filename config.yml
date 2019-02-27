@@ -7,4 +7,6 @@ requests:
   timeout: 5 #seconds
 
 persistance:
-  filename: "data/queue.json"
+  foldername: "data"
+  filename: "queue.json"
+  filepath: "data/queue.json"

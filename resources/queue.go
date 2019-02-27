@@ -28,7 +28,7 @@ var (
 )
 
 func Init() {
-	durableFileName = viper.GetString("persistance.filename")
+	durableFileName = viper.GetString("persistance.filepath")
 	InitDefaultQueue()
 	initPersistedQueues()
 
