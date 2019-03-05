@@ -100,6 +100,7 @@ func DeleteQueue(w http.ResponseWriter, r *http.Request) {
 		qdr := QueueDeleteResponse{}
 		if found {
 			qdr.RMsg = "Queue Deleted Successfully"
+			helper.ColorLog("\033[35m", fmt.Sprintf("Queue Deleted: %s\n", qn))
 		} else {
 			qdr.RMsg = "No Queue called: " + qn + " found"
 		}
@@ -109,8 +110,6 @@ func DeleteQueue(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			helper.FailOnError(err, "Could not decode response")
 		}
-
-		helper.ColorLog("\033[35m", fmt.Sprintf("Queue Deleted: %s\n", qn))
 
 		fmt.Fprintf(w, "%s", string(b))
 

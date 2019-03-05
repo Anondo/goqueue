@@ -22,14 +22,14 @@ var (
 	}
 )
 
-func init() {
-	RmCmd.Flags().StringP("name", "n", "", "The name of the queue to remove")
-	viper.BindPFlag("name", RmCmd.Flags().Lookup("name"))
-}
-
 func removeQueue(cmd *cobra.Command, args []string) {
 
-	qn := viper.GetString("name")
+	if len(args) == 0 {
+		helper.ColorLog("\033[31m", "Must provide name of the queue")
+		return
+	}
+
+	qn := args[0]
 
 	if qn == "" {
 		helper.ColorLog("\033[31m", "Must provide name of the queue")

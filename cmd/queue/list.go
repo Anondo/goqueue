@@ -18,7 +18,7 @@ import (
 
 var (
 	ListCmd = &cobra.Command{
-		Use:   "list",
+		Use:   "ls",
 		Short: "Lists all the active queues",
 		Run:   listQueue,
 	}
