@@ -59,6 +59,27 @@ func GetQueueList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ClearQueue(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPut {
+		qn := chi.URLParam(r, "qname")
+		q := resources.GetQueueByName(qn)
+
+		var qcr struct {
+			RMsg string `json:"response_message"`
+		}
+
+		if q == nil {
+			qcr.RMsg = "No queue named: " + qn + " was found"
+		} else {
+			qcr.RMsg = q.Clear()
+		}
+
+		b, _ := json.Marshal(qcr)
+
+		fmt.Fprintf(w, "%s", string(b))
+	}
+}
+
 type QueueDeleteResponse struct {
 	RMsg string `json:"response_message"`
 }

@@ -59,6 +59,20 @@ func (q *Queue) IsTaskRegistered(tn string) bool {
 	return false
 }
 
+func (q *Queue) Clear() string {
+
+	if len(q.Jobs) == 0 {
+		return fmt.Sprintf("Queue:%s already empty", q.Name)
+	}
+
+	for len(q.Jobs) > 0 {
+		<-q.Jobs
+	}
+	helper.ColorLog("\033[35m", fmt.Sprintf("Queue Cleared: {Name:%s & Capacity:%d}\n", q.Name, q.Capacity))
+
+	return fmt.Sprintf("Queue:%s has been successfully truncated", q.Name)
+}
+
 func InitDefaultQueue() {
 	q := Queue{
 		ID:       1,
