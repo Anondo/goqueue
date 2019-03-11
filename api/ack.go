@@ -1,12 +1,9 @@
 package api
 
 import (
-	"fmt"
 	"goqueue/helper"
 	"goqueue/resources"
 	"net/http"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 type AckRequest struct {
@@ -21,13 +18,10 @@ func Acknowledgement(w http.ResponseWriter, r *http.Request) {
 
 	q := resources.GetQueueByName(a.Qname)
 
-	fmt.Println("heeeeeerrreeeeeeee")
-
 	if q != nil {
 		s := q.GetSubscriber(a.Subscriber)
 		if s != nil {
 			s.Ack = a.Ack
-			spew.Dump(s)
 		}
 	}
 

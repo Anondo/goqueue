@@ -6,6 +6,8 @@ import (
 	"goqueue/helper"
 	"net/http"
 	"time"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 type Arguments struct {
@@ -44,6 +46,7 @@ func SendJob(w http.ResponseWriter, qn, wn, hn string) {
 		s := q.GetSubscriber(wn)
 
 		for time.Now().Before(ackEndTime) {
+			spew.Dump(QList)
 			if s.Ack {
 				helper.ColorLog("\033[35m", fmt.Sprintf("Received acknowledgement from consumer:%s", wn))
 				helper.FailOnError(q.removeDurableJob(j), "Could not remove persistant job")
