@@ -21,6 +21,7 @@ type Queue struct {
 	RegisteredTaskNames []string
 	Subscribers         []*Subscriber
 	Durable             bool
+	AckWait             time.Duration
 }
 
 var (
@@ -167,4 +168,13 @@ func RegisterTasks(qn string, tns []string) error {
 		return nil
 	}
 	return errors.New("No Such Queue")
+}
+
+func (q *Queue) GetSubscriber(s string) *Subscriber {
+	for _, sbscrbr := range q.Subscribers {
+		if sbscrbr.CName == s {
+			return sbscrbr
+		}
+	}
+	return nil
 }

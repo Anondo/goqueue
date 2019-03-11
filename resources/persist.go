@@ -193,6 +193,28 @@ func RemovePersistedQueue(qn string) error {
 	return nil
 }
 
+func (q *Queue) Requeue() error {
+	data, err := ioutil.ReadFile(durableFileName)
+
+	jql := []JSONQueue{}
+
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(data, &jql); err != nil {
+		return err
+	}
+
+	for _, jq := range jql {
+		if q.Name == jq.Name {
+			q.Jobs = jq.FromJSON().Jobs
+		}
+	}
+
+	return nil
+}
+
 func initPersistedQueues() error {
 	data, err := ioutil.ReadFile(durableFileName)
 

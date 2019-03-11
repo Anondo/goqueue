@@ -8,6 +8,7 @@ type Subscriber struct {
 	Host  string `json:"host"`
 	Port  int    `json:"port"`
 	CName string `json:"cname"`
+	Ack   bool   `json:"ack"`
 }
 
 func SubscribeConsumer(h string, p int, qn, wn string) {

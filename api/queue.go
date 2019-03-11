@@ -6,14 +6,16 @@ import (
 	"goqueue/helper"
 	"goqueue/resources"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi"
 )
 
 type QueueRequest struct {
-	Name     string `json:"name"`
-	Capacity int    `json:"cap"`
-	Durable  bool   `json:"durable"`
+	Name     string        `json:"name"`
+	Capacity int           `json:"cap"`
+	Durable  bool          `json:"durable"`
+	AckWait  time.Duration `json:"ack_wait"`
 }
 
 func DeclearQueue(w http.ResponseWriter, r *http.Request) {
@@ -31,6 +33,7 @@ func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 			Capacity: qr.Capacity,
 			Jobs:     make(chan resources.Job, qr.Capacity),
 			Durable:  qr.Durable,
+			AckWait:  qr.AckWait,
 		}
 
 		resources.AddQueue(nq)
