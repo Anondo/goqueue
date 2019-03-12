@@ -41,24 +41,28 @@ func SendJob(w http.ResponseWriter, qn, wn, hn string) {
 
 		helper.ColorLog("\033[35m", fmt.Sprintf("Job:{Name:%s Args:%v} fetched by %s", j.JobName, j.Args, wn))
 
-		ackEndTime := time.Now().Add(q.AckWait)
+		go func() {
+			ackEndTime := time.Now().Add(q.AckWait)
 
-		s := q.GetSubscriber(wn)
+			s := q.GetSubscriber(wn)
 
-		for time.Now().Before(ackEndTime) {
-			spew.Dump(QList)
-			if s.Ack {
-				helper.ColorLog("\033[35m", fmt.Sprintf("Received acknowledgement from consumer:%s", wn))
-				helper.FailOnError(q.removeDurableJob(j), "Could not remove persistant job")
-				break
+			spew.Dump(q.Jobs)
+
+			for time.Now().Before(ackEndTime) {
+				// spew.Dump(QList)
+				if s.Ack {
+					helper.ColorLog("\033[35m", fmt.Sprintf("Received acknowledgement from consumer:%s", wn))
+					helper.FailOnError(q.removeDurableJob(j), "Could not remove persistant job")
+					break
+				}
 			}
-		}
 
-		if !s.Ack {
-			q.Requeue()
-		}
+			if !s.Ack && q.Durable {
+				q.Requeue()
+			}
 
-		s.Ack = false
+			s.Ack = false
+		}()
 
 	}
 }
