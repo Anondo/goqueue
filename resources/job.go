@@ -6,8 +6,6 @@ import (
 	"goqueue/helper"
 	"net/http"
 	"time"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 type Arguments struct {
@@ -28,9 +26,10 @@ func SendJob(w http.ResponseWriter, qn, wn, hn string) {
 		helper.ColorLog("\033[35m", fmt.Sprintf("Subscriber:%s is ready to fetch jobs", wn))
 
 		j := <-q.Jobs
-		// ackd, _ := GetAck(q, hn, wn)
 		if !q.IsTaskRegistered(j.JobName) { // TODO: Tasks are now registered regardless of the subscriber,need to fix this
-			q.Jobs <- j // TODO: need to fix the current requeuing
+			if q.Durable {
+				helper.LogOnError(q.Requeue(), "Could not requeue task")
+			}
 			return
 		}
 		b, err := json.Marshal(j)
@@ -46,10 +45,7 @@ func SendJob(w http.ResponseWriter, qn, wn, hn string) {
 
 			s := q.GetSubscriber(wn)
 
-			spew.Dump(q.Jobs)
-
 			for time.Now().Before(ackEndTime) {
-				// spew.Dump(QList)
 				if s.Ack {
 					helper.ColorLog("\033[35m", fmt.Sprintf("Received acknowledgement from consumer:%s", wn))
 					helper.FailOnError(q.removeDurableJob(j), "Could not remove persistant job")
@@ -58,7 +54,7 @@ func SendJob(w http.ResponseWriter, qn, wn, hn string) {
 			}
 
 			if !s.Ack && q.Durable {
-				q.Requeue()
+				helper.LogOnError(q.Requeue(), "Could not requeue task")
 			}
 
 			s.Ack = false
