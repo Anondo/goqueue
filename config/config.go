@@ -23,15 +23,14 @@ func makeFiles() error {
 		if err != nil {
 			return err
 		}
-	}
+		file, err := os.Create(fp)
 
-	file, err := os.Create(fp)
+		file.WriteString("[]")
+		file.Close()
 
-	file.WriteString("[]")
-	file.Close()
-
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

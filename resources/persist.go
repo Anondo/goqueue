@@ -3,6 +3,7 @@ package resources
 import (
 	"encoding/json"
 	"io/ioutil"
+	"time"
 )
 
 var (
@@ -22,6 +23,7 @@ type JSONQueue struct {
 	Capacity            int           `json:"capacity"`
 	RegisteredTaskNames []string      `json:"reg_tasks"`
 	Subscribers         []*Subscriber `json:"subscribers"`
+	AckWait             time.Duration `json:"ack"`
 }
 
 func (j *JSONQueue) FromJSON() Queue {
@@ -42,6 +44,7 @@ func (j *JSONQueue) FromJSON() Queue {
 		Capacity:            j.Capacity,
 		RegisteredTaskNames: j.RegisteredTaskNames,
 		Subscribers:         j.Subscribers,
+		AckWait:             j.AckWait,
 	}
 }
 
@@ -53,6 +56,7 @@ func (q *Queue) toJSON() JSONQueue {
 		Capacity:            q.Capacity,
 		RegisteredTaskNames: q.RegisteredTaskNames,
 		Subscribers:         q.Subscribers,
+		AckWait:             q.AckWait,
 	}
 }
 
