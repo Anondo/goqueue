@@ -61,16 +61,21 @@ func listQueue(cmd *cobra.Command, args []string) {
 
 	for _, q := range r.Queues {
 		if viper.GetBool("verbose") {
-			fmt.Println("Name: ", q.Name)
-			fmt.Println("Capacity: ", q.Capacity)
-			fmt.Println("Registered tasks: ", q.RegisteredTaskNames)
+			fmt.Println("Name:", q.Name)
+			fmt.Println("Capacity:", q.Capacity)
+			fmt.Println("Registered tasks:", q.RegisteredTaskNames)
 			fmt.Println("Subscribers: [")
 			for _, s := range q.Subscribers {
-				fmt.Println("       ", *s)
+				fmt.Println("       Host:", s.Host)
+				fmt.Println("       Port:", s.Port)
+				fmt.Println("       Name:", s.CName)
+				fmt.Println("       Acknowledged:", s.Ack, ",")
+				fmt.Println()
 			}
 			fmt.Println("]")
-			fmt.Println("Durable: ", q.Durable)
-			fmt.Println("Acknowledgement Wait Time: ", q.AckWait)
+			fmt.Println("Durable:", q.Durable)
+			fmt.Println("Acknowledgement Wait Time:", q.AckWait, ",")
+			fmt.Println()
 		} else {
 			fmt.Println(q.Name)
 		}
