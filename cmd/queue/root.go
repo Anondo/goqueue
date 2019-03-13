@@ -16,3 +16,6 @@ func init() {
 	QueueCmd.AddCommand(RmCmd)
 	QueueCmd.AddCommand(ClearCmd)
 }
+
+// TODO: All the queue commands makes a http request to the server. Need to fix this,
+// no http calls ,for example: basic iteration on the Qlist.

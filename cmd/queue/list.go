@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"goqueue/helper"
+	"goqueue/resources"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -25,6 +26,8 @@ var (
 )
 
 func init() {
+	ListCmd.Flags().BoolP("verbose", "v", false, "Verbose flag if provided shows the details of the queue")
+	viper.BindPFlag("verbose", ListCmd.Flags().Lookup("verbose"))
 }
 
 func listQueue(cmd *cobra.Command, args []string) {
@@ -51,13 +54,26 @@ func listQueue(cmd *cobra.Command, args []string) {
 	}
 
 	var r struct {
-		QNames []string `json:"qnames"`
+		Queues []resources.JSONQueue `json:"queues"`
 	}
 
 	helper.FailOnError(json.NewDecoder(resp.Body).Decode(&r), "Could not decode result")
 
-	for _, q := range r.QNames {
-		fmt.Println(q)
+	for _, q := range r.Queues {
+		if viper.GetBool("verbose") {
+			fmt.Println("Name: ", q.Name)
+			fmt.Println("Capacity: ", q.Capacity)
+			fmt.Println("Registered tasks: ", q.RegisteredTaskNames)
+			fmt.Println("Subscribers: [")
+			for _, s := range q.Subscribers {
+				fmt.Println("       ", *s)
+			}
+			fmt.Println("]")
+			fmt.Println("Durable: ", q.Durable)
+			fmt.Println("Acknowledgement Wait Time: ", q.AckWait)
+		} else {
+			fmt.Println(q.Name)
+		}
 	}
 
 }

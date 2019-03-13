@@ -24,6 +24,7 @@ type JSONQueue struct {
 	RegisteredTaskNames []string      `json:"reg_tasks"`
 	Subscribers         []*Subscriber `json:"subscribers"`
 	AckWait             time.Duration `json:"ack"`
+	Durable             bool          `json:"durable"`
 }
 
 func (j *JSONQueue) FromJSON() Queue {
@@ -45,10 +46,11 @@ func (j *JSONQueue) FromJSON() Queue {
 		RegisteredTaskNames: j.RegisteredTaskNames,
 		Subscribers:         j.Subscribers,
 		AckWait:             j.AckWait,
+		Durable:             j.Durable,
 	}
 }
 
-func (q *Queue) toJSON() JSONQueue {
+func (q *Queue) ToJSON() JSONQueue {
 	return JSONQueue{
 		ID:                  q.ID,
 		Name:                q.Name,
@@ -57,6 +59,7 @@ func (q *Queue) toJSON() JSONQueue {
 		RegisteredTaskNames: q.RegisteredTaskNames,
 		Subscribers:         q.Subscribers,
 		AckWait:             q.AckWait,
+		Durable:             q.Durable,
 	}
 }
 
@@ -73,7 +76,7 @@ func (q *Queue) persistQueue() error {
 		return err
 	}
 
-	jq := q.toJSON()
+	jq := q.ToJSON()
 
 	jql = append(jql, jq)
 

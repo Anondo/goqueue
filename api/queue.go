@@ -41,7 +41,7 @@ func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 }
 
 type QueueListResponse struct {
-	QNames []string `json:"qnames"`
+	Queues []resources.JSONQueue `json:"queues"`
 }
 
 func GetQueueList(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +49,7 @@ func GetQueueList(w http.ResponseWriter, r *http.Request) {
 		qlr := QueueListResponse{}
 
 		for _, q := range resources.QList {
-			qlr.QNames = append(qlr.QNames, q.Name)
+			qlr.Queues = append(qlr.Queues, q.ToJSON())
 		}
 
 		b, err := json.Marshal(qlr)
