@@ -47,7 +47,7 @@ func (q *Queue) PushTask(jn string, args []Arguments) {
 
 	helper.FailOnError(q.addDurableJob(j), "Could not persist job")
 
-	helper.JobReceiveLog(j.JobName, q.Name, jl, q.Capacity, j.Args)
+	helper.JobReceiveLog(j.JobName, q.Name, jl, q.Capacity, j.Args, q.Durable)
 
 }
 
@@ -92,7 +92,8 @@ func AddQueue(q Queue) {
 	if q.Durable {
 		helper.FailOnError(q.persistQueue(), "Could not persist queue:"+q.Name)
 	}
-	helper.ColorLog("\033[35m", fmt.Sprintf("Queue Declared: {Name:%s & Capacity:%d}\n", q.Name, q.Capacity))
+	helper.ColorLog("\033[35m", fmt.Sprintf("Queue Declared: {Name:%s , Capacity:%d , Durable:%v , AckWait:%v}\n",
+		q.Name, q.Capacity, q.Durable, q.AckWait))
 	return
 }
 

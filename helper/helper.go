@@ -59,7 +59,7 @@ func ServerStartLog(qnum int) {
 
 }
 
-func JobReceiveLog(jn, qn string, nj, c int, a interface{}) {
+func JobReceiveLog(jn, qn string, nj, c int, a interface{}, durable bool) {
 	fmt.Println("--------------------------------------------")
 	prpl := "\033[35m" // purple
 	msg := fmt.Sprintf("Job Received: {Name: %s Args: %v}", jn, a)
@@ -72,6 +72,9 @@ func JobReceiveLog(jn, qn string, nj, c int, a interface{}) {
 	ColorLog(prpl, msg)
 
 	msg = fmt.Sprintf("Queue Capacity: %d", c)
+	ColorLog(prpl, msg)
+
+	msg = fmt.Sprintf("Queue Durability: %v", durable)
 	ColorLog(prpl, msg)
 
 	fmt.Println("--------------------------------------------")
