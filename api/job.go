@@ -4,7 +4,6 @@ import (
 	"goqueue/helper"
 	"goqueue/resources"
 	"net/http"
-	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/spf13/viper"
@@ -41,11 +40,6 @@ func FetchJobRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hn := strings.Split(r.RemoteAddr, ":")[0]
-	if hn == "[" {
-		hn = "localhost"
-	}
-
-	resources.SendJob(w, qn, wn, hn)
+	resources.SendJob(w, qn, wn)
 
 }

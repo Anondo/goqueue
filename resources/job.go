@@ -19,7 +19,7 @@ type Job struct {
 	Args    []Arguments `json:"args"`
 }
 
-func SendJob(w http.ResponseWriter, qn, wn, hn string) {
+func SendJob(w http.ResponseWriter, qn, wn string) {
 	q := GetQueueByName(qn)
 	if q != nil {
 

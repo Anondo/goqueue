@@ -4,12 +4,12 @@ import (
 	"goqueue/helper"
 	"goqueue/resources"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
 type SubscribeResp struct {
 	Name  string `json:"name"`
-	Port  int    `json:"port"`
 	QName string `json:"qname"`
 }
 
@@ -25,6 +25,9 @@ func SubscribeRequest(w http.ResponseWriter, r *http.Request) {
 			h = "localhost"
 		}
 
-		resources.SubscribeConsumer(h, sr.Port, sr.QName, sr.Name)
+		p := strings.Split(r.RemoteAddr, ":")[1]
+		pint, _ := strconv.Atoi(p)
+
+		resources.SubscribeConsumer(h, pint, sr.QName, sr.Name)
 	}
 }
