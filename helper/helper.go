@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	// Logo is the variable holding the logo of goqueue
 	Logo = `
   _____        ____
  / ____|      / __ \
@@ -26,26 +27,32 @@ const (
 	`
 )
 
+// FailOnError is the helper function for checking an error & failing on existance
 func FailOnError(err error, errMsg string) {
 	if err != nil {
 		log.Fatal("\033[31m", fmt.Sprintf("%s: %s\n", err.Error(), errMsg), "\033[0m")
 	}
 }
+
+// LogOnError is the helper function for checking an error & logging on existance
 func LogOnError(err error, errMsg string) {
 	if err != nil {
 		log.Println("\033[31m", fmt.Sprintf("%s: %s\n", err.Error(), errMsg), "\033[0m")
 	}
 }
 
+// ParseBody is the helper function which parses a body a populates the interfaces passed
 func ParseBody(bdy io.ReadCloser, s interface{}) error {
 	return json.NewDecoder(bdy).Decode(&s)
 }
 
+// ColorLog is the helper function to log in the stdout with color
 func ColorLog(color, msg string) {
 	nc := "\033[0m"
 	log.Println(color, msg, nc)
 }
 
+// ServerStartLog is the helper function which logs the starting of a goqueue server in the stdout
 func ServerStartLog(qnum int) {
 	yellow := "\033[1;33m"
 	nc := "\033[0m"
@@ -59,6 +66,7 @@ func ServerStartLog(qnum int) {
 
 }
 
+// JobReceiveLog is the helper function to log about when a job is received in the stdout
 func JobReceiveLog(jn, qn string, nj, c int, a interface{}, durable bool) {
 	fmt.Println("--------------------------------------------")
 	prpl := "\033[35m" // purple

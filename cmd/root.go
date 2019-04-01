@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	//RootCmd is the root command for the goqueue app
 	RootCmd = &cobra.Command{
 		Use:   "goqueue",
 		Short: "Goqueue is a task/job queue",
@@ -24,6 +25,7 @@ func init() {
 	RootCmd.AddCommand(queue.QueueCmd)
 }
 
+// Execute executes the root command for the app
 func Execute() {
 	helper.FailOnError(RootCmd.Execute(), "Failed to run goqueue")
 }

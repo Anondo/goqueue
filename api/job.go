@@ -9,12 +9,14 @@ import (
 	"github.com/spf13/viper"
 )
 
+// JobCreateRequest is the struct representing the job create request payload
 type JobCreateRequest struct {
 	Task  string                `json:"task"`
 	Args  []resources.Arguments `json:"args"`
 	QName string                `json:"qname"`
 }
 
+// CreateJobRequest is the handler api for creating a new job
 func CreateJobRequest(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		j := JobCreateRequest{}
@@ -32,6 +34,7 @@ func CreateJobRequest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// FetchJobRequest is the handler api for pushing job to the workers
 func FetchJobRequest(w http.ResponseWriter, r *http.Request) {
 	qn := chi.URLParam(r, "queue_name")
 	wn := r.URL.Query().Get("sname")

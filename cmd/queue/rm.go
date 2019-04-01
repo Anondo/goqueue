@@ -15,6 +15,7 @@ import (
 )
 
 var (
+	//RmCmd is the command which removes a queue from the goqueue server
 	RmCmd = &cobra.Command{
 		Use:   "rm",
 		Short: "Removes a queue",

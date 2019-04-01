@@ -5,6 +5,7 @@ import (
 )
 
 var (
+	//QueueCmd is the root of every command related to queues
 	QueueCmd = &cobra.Command{
 		Use:   "queue",
 		Short: "Commands regrading queues",

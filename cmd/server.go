@@ -15,6 +15,7 @@ import (
 )
 
 var (
+	// ServerCmd is the command to start the goqueue server
 	ServerCmd = &cobra.Command{
 		Use:   "server",
 		Short: "Starts the goqueue server",

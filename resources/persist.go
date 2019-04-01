@@ -10,12 +10,14 @@ var (
 	durableFileName string
 )
 
+// JSONJob is the correspondent struct of the JOB struct
 type JSONJob struct {
 	ID      int         `json:"id"`
 	JobName string      `json:"job_name"`
 	Args    []Arguments `json:"args"`
 }
 
+// JSONQueue is the correspondent struct of the Queue struct
 type JSONQueue struct {
 	ID                  int           `json:"id"`
 	Name                string        `json:"name"`

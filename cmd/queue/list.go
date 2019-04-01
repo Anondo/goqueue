@@ -18,6 +18,7 @@ import (
 )
 
 var (
+	// ListCmd is the command to list all the active queues in the goqueue server
 	ListCmd = &cobra.Command{
 		Use:   "ls",
 		Short: "Lists all the active queues",

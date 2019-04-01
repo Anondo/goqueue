@@ -15,6 +15,7 @@ import (
 )
 
 var (
+	// ClearCmd is the command for removing every tasks from a queue
 	ClearCmd = &cobra.Command{
 		Use:   "clear",
 		Short: "Clears the contents of a queue",

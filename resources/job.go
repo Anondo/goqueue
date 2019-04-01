@@ -8,17 +8,20 @@ import (
 	"time"
 )
 
+// Arguments is the struct which will be used for taking arguments for a task
 type Arguments struct {
 	Value interface{} `json:"value"`
 	Type  string      `json:"type"`
 }
 
+// Job is the struct which represents a JOB queued in the queue
 type Job struct {
 	ID      int         `json:"id"`
 	JobName string      `json:"job_name"`
 	Args    []Arguments `json:"args"`
 }
 
+// SendJob is a function which sends the job to the subscribed consumer
 func SendJob(w http.ResponseWriter, qn, wn string) {
 	q := GetQueueByName(qn)
 	if q != nil {

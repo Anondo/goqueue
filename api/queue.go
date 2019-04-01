@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
+// QueueRequest is the struct representing the payload for creating a new task queue
 type QueueRequest struct {
 	Name     string        `json:"name"`
 	Capacity int           `json:"cap"`
@@ -18,6 +19,7 @@ type QueueRequest struct {
 	AckWait  time.Duration `json:"ack_wait"`
 }
 
+// DeclearQueue is the handler api for creating a new task queue
 func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		qr := QueueRequest{}
@@ -40,10 +42,12 @@ func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// QueueListResponse is the if struct representing the response body for queue listing
 type QueueListResponse struct {
 	Queues []resources.JSONQueue `json:"queues"`
 }
 
+// GetQueueList is the handler api for getting the list of the current queues
 func GetQueueList(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		qlr := QueueListResponse{}
@@ -62,6 +66,7 @@ func GetQueueList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ClearQueue is the handler api for clearing all the tasks from a task queue
 func ClearQueue(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPut {
 		qn := chi.URLParam(r, "qname")
@@ -83,10 +88,12 @@ func ClearQueue(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// QueueDeleteResponse is the struct representing the response body when a queue deleted
 type QueueDeleteResponse struct {
 	RMsg string `json:"response_message"`
 }
 
+// DeleteQueue is the handler api for deleting a task queue
 func DeleteQueue(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodDelete {
 		qn := chi.URLParam(r, "qname")
@@ -119,11 +126,13 @@ func DeleteQueue(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// RegTaskReq is the struct representing the payload for task registration request
 type RegTaskReq struct {
 	TaskNames []string `json:"task_names"`
 	QName     string   `json:"qname"`
 }
 
+// RegisterTaskRequest is the handler api for requesting for task registration
 func RegisterTaskRequest(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		rtr := RegTaskReq{}
