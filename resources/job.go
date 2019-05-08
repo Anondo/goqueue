@@ -36,9 +36,7 @@ func SendJob(w http.ResponseWriter, qn, wn string) {
 			return
 		}
 		b, err := json.Marshal(j)
-		if err != nil {
-			helper.FailOnError(err, "Could not decode job")
-		}
+		helper.FailOnError(err, "Could not decode job")
 		fmt.Fprintf(w, "%s", string(b))
 
 		helper.ColorLog("\033[35m", fmt.Sprintf("Job:{Name:%s Args:%v} fetched by %s", j.JobName, j.Args, wn))
