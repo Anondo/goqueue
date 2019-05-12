@@ -29,10 +29,11 @@ type JSONQueue struct {
 	Durable             bool          `json:"durable"`
 }
 
-func (j *JSONQueue) FromJSON() Queue {
-	jc := make(chan Job, j.Capacity)
+// FromJSON Populates a queue from a JSONQueue
+func (jq *JSONQueue) FromJSON() Queue {
+	jc := make(chan Job, jq.Capacity)
 
-	for _, j := range j.Jobs {
+	for _, j := range jq.Jobs {
 		jc <- Job{
 			ID:      j.ID,
 			JobName: j.JobName,
@@ -41,17 +42,18 @@ func (j *JSONQueue) FromJSON() Queue {
 	}
 
 	return Queue{
-		ID:                  j.ID,
-		Name:                j.Name,
+		ID:                  jq.ID,
+		Name:                jq.Name,
 		Jobs:                jc,
-		Capacity:            j.Capacity,
-		RegisteredTaskNames: j.RegisteredTaskNames,
-		Subscribers:         j.Subscribers,
-		AckWait:             j.AckWait,
-		Durable:             j.Durable,
+		Capacity:            jq.Capacity,
+		RegisteredTaskNames: jq.RegisteredTaskNames,
+		Subscribers:         jq.Subscribers,
+		AckWait:             jq.AckWait,
+		Durable:             jq.Durable,
 	}
 }
 
+// ToJSON populates a JSONQueue from Queue
 func (q *Queue) ToJSON() JSONQueue {
 	return JSONQueue{
 		ID:                  q.ID,
@@ -179,6 +181,7 @@ func (q *Queue) removeDurableJob(j Job) error {
 	return nil
 }
 
+// RemovePersistedQueue removes a queue from persistance
 func RemovePersistedQueue(qn string) error {
 	data, err := ioutil.ReadFile(durableFileName)
 
@@ -202,6 +205,7 @@ func RemovePersistedQueue(qn string) error {
 	return nil
 }
 
+// Requeue re-pushes a job to the queue, used in case of some kind of failure
 func (q *Queue) Requeue() error {
 	data, err := ioutil.ReadFile(durableFileName)
 

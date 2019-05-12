@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Queue represents the task job queue
 type Queue struct {
 	ID                  int
 	Name                string
@@ -24,10 +25,12 @@ type Queue struct {
 	AckWait             time.Duration
 }
 
+// QList is the list of all the queues in the  broker
 var (
 	QList []Queue
 )
 
+// Init initializes the queues, both persistant and default queues
 func Init() {
 	durableFileName = viper.GetString("persistance.filepath")
 	InitDefaultQueue()
@@ -35,6 +38,7 @@ func Init() {
 
 }
 
+// PushTask pushes a new task into the queue
 func (q *Queue) PushTask(jn string, args []Arguments) {
 	j := Job{
 		ID:      len(q.Jobs) + 1,
@@ -51,6 +55,7 @@ func (q *Queue) PushTask(jn string, args []Arguments) {
 
 }
 
+// IsTaskRegistered determines if a task is registered against the queue
 func (q *Queue) IsTaskRegistered(tn string) bool {
 	for _, t := range q.RegisteredTaskNames {
 		if tn == t {
@@ -60,6 +65,7 @@ func (q *Queue) IsTaskRegistered(tn string) bool {
 	return false
 }
 
+// Clear empties a queue
 func (q *Queue) Clear() string {
 
 	if len(q.Jobs) == 0 {
@@ -74,6 +80,7 @@ func (q *Queue) Clear() string {
 	return fmt.Sprintf("Queue:%s has been successfully truncated", q.Name)
 }
 
+// InitDefaultQueue initializes the default queue
 func InitDefaultQueue() {
 	q := Queue{
 		ID:       1,
@@ -84,6 +91,7 @@ func InitDefaultQueue() {
 	QList = append(QList, q)
 }
 
+// AddQueue creates a new queue in the broker
 func AddQueue(q Queue) {
 	if QueueExists(q.Name) {
 		return
@@ -97,6 +105,7 @@ func AddQueue(q Queue) {
 	return
 }
 
+// AddTask makes the queue push a new task
 func AddTask(qn, jn string, args []Arguments) {
 	for _, q := range QList {
 		if q.Name == qn {
@@ -107,6 +116,7 @@ func AddTask(qn, jn string, args []Arguments) {
 	log.Println("No queue named", qn)
 }
 
+// QueueExists determines if a queue actually exists by its name
 func QueueExists(qn string) bool {
 	for _, q := range QList {
 		if q.Name == qn {
