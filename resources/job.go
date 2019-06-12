@@ -26,8 +26,6 @@ func SendJob(w http.ResponseWriter, qn, wn string) {
 	q := GetQueueByName(qn)
 	if q != nil {
 
-		helper.ColorLog("\033[35m", fmt.Sprintf("Subscriber:%s is ready to fetch jobs", wn))
-
 		j := <-q.Jobs
 		if !q.IsTaskRegistered(j.JobName) { // TODO: Tasks are now registered regardless of the subscriber,need to fix this
 			if q.Durable {
@@ -50,12 +48,17 @@ func SendJob(w http.ResponseWriter, qn, wn string) {
 				if s.Ack {
 					helper.ColorLog("\033[35m", fmt.Sprintf("Received acknowledgement from consumer:%s", wn))
 					helper.FailOnError(q.removeDurableJob(j), "Could not remove persistant job")
+					helper.ColorLog("\033[35m", fmt.Sprintf("Subscriber:%s is ready to fetch jobs", wn))
 					break
 				}
 			}
 
 			if !s.Ack && q.Durable {
 				helper.LogOnError(q.Requeue(), "Could not requeue task")
+			}
+
+			if !s.Ack {
+				helper.ColorLog("\033[31m", fmt.Sprintf("No acknowledgement received from consumer:%s", wn))
 			}
 
 			s.Ack = false

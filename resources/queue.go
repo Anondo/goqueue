@@ -1,13 +1,10 @@
 package resources
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"goqueue/helper"
 	"log"
-	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/spf13/viper"
@@ -126,6 +123,7 @@ func QueueExists(qn string) bool {
 	return false
 }
 
+// GetQueueByName returns a queue instance matching the queue name
 func GetQueueByName(qn string) *Queue {
 	for i, q := range QList {
 		if q.Name == qn {
@@ -135,36 +133,7 @@ func GetQueueByName(qn string) *Queue {
 	return nil
 }
 
-func GetAck(q *Queue, hn, wn string) (bool, error) {
-	for _, s := range q.Subscribers {
-		if s.Host == hn {
-			uri := "http://" + s.Host + ":" + strconv.Itoa(s.Port) + "/worker/acknowledge"
-			req, err := http.NewRequest(http.MethodGet, uri, nil)
-
-			if err != nil {
-				return false, nil
-			}
-
-			ctx, cancel := context.WithTimeout(context.Background(), viper.GetDuration("requests.timeout")*time.Second)
-			req = req.WithContext(ctx)
-
-			defer cancel()
-
-			c := http.Client{}
-			resp, _ := c.Do(req)
-
-			if resp != nil {
-				helper.ColorLog("\033[35m", fmt.Sprintf("Received acknowledgement from consumer:%s", wn))
-				return true, nil
-			}
-
-			break
-		}
-	}
-	helper.ColorLog("\033[35m", fmt.Sprintf("No acknowledgement from consumer:%s", wn))
-	return false, nil
-}
-
+// RegisterTasks registers task names for a queue matched by the given queue name
 func RegisterTasks(qn string, tns []string) error {
 	q := GetQueueByName(qn)
 	if q != nil {
@@ -181,6 +150,7 @@ func RegisterTasks(qn string, tns []string) error {
 	return errors.New("No Such Queue")
 }
 
+// GetSubscriber returns a subscriber instance matched by the consumer name
 func (q *Queue) GetSubscriber(s string) *Subscriber {
 	for _, sbscrbr := range q.Subscribers {
 		if sbscrbr.CName == s {

@@ -4,6 +4,7 @@ import (
 	"goqueue/helper"
 )
 
+// Subscriber represents a subscriber informations
 type Subscriber struct {
 	Host  string `json:"host"`
 	Port  int    `json:"port"`
@@ -11,6 +12,7 @@ type Subscriber struct {
 	Ack   bool   `json:"ack"`
 }
 
+// SubscribeConsumer subscribes a consumer for a particular queue
 func SubscribeConsumer(h string, p int, qn, wn string) {
 	q := GetQueueByName(qn)
 
