@@ -30,11 +30,29 @@ func SubscribeConsumer(h string, p int, qn, wn, id string) {
 			CName: wn,
 		}
 		q.Subscribers = append(q.Subscribers, s)
-		helper.FailOnError(q.addDurableSubscriber(s), "Failed to persist subscriber")
-	}
+		if q.Durable {
+			helper.FailOnError(q.addDurableSubscriber(s), "Failed to persist subscriber")
+		}
+		helper.ColorLog("\033[35m", "Successfully subscribed:"+wn)
 
-	helper.ColorLog("\033[35m", "Successfully subscribed:"+wn)
+	}
 
 }
 
-// func UnsubscribeConsumer(id string)
+// UnsubscribeConsumer removes a subscriber for the subscriber list of the queue
+func UnsubscribeConsumer(qn, id, wn string) {
+	q := GetQueueByName(qn)
+
+	if q != nil {
+		for i, s := range q.Subscribers {
+			if s.ID == id {
+				q.Subscribers = append(q.Subscribers[:i], q.Subscribers[i+1:]...)
+				if q.Durable {
+					helper.FailOnError(q.removeDurableSubscriber(s), "Failed to remove persisted subscriber")
+				}
+				break
+			}
+		}
+		helper.ColorLog("\033[35m", "Unsubscribed consumer:"+wn)
+	}
+}

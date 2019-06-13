@@ -112,6 +112,33 @@ func (q *Queue) addDurableSubscriber(s *Subscriber) error {
 	return nil
 }
 
+func (q *Queue) removeDurableSubscriber(s *Subscriber) error {
+	data, err := ioutil.ReadFile(durableFileName)
+
+	jql := []*JSONQueue{}
+
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(data, &jql); err != nil {
+		return err
+	}
+
+	for _, jq := range jql {
+		if jq.Name == q.Name {
+			for i, sbscrbr := range jq.Subscribers {
+				if sbscrbr.ID == s.ID {
+					jq.Subscribers = append(jq.Subscribers[:i], jq.Subscribers[i+1:]...)
+					b, _ := json.Marshal(jql)
+					return ioutil.WriteFile(durableFileName, b, 0644)
+				}
+			}
+		}
+	}
+	return nil
+}
+
 func (q *Queue) addDurableRegTask(tsk string) error {
 	data, err := ioutil.ReadFile(durableFileName)
 

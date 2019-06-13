@@ -47,6 +47,7 @@ func resourceHandlers() http.Handler {
 		r.Post("/subscribe", api.SubscribeRequest)
 		r.Post("/task/register", api.RegisterTaskRequest)
 		r.Post("/task/acknowledge", api.Acknowledgement)
+		r.Delete("/unsubscribe", api.UnsubscribeRequest)
 	})
 
 	return h

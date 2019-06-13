@@ -26,6 +26,12 @@ func SendJob(w http.ResponseWriter, qn, wn string) {
 	q := GetQueueByName(qn)
 	if q != nil {
 
+		s := q.GetSubscriber(wn)
+
+		if s == nil {
+			return
+		}
+
 		j := <-q.Jobs
 		if !q.IsTaskRegistered(j.JobName) { // TODO: Tasks are now registered regardless of the subscriber,need to fix this
 			if q.Durable {
@@ -41,8 +47,6 @@ func SendJob(w http.ResponseWriter, qn, wn string) {
 
 		go func() {
 			ackEndTime := time.Now().Add(q.AckWait)
-
-			s := q.GetSubscriber(wn)
 
 			for time.Now().Before(ackEndTime) {
 				if s.Ack {
