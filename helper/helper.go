@@ -7,6 +7,7 @@ import (
 	"log"
 	"strconv"
 
+	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 )
 
@@ -86,4 +87,9 @@ func JobReceiveLog(jn, qn string, nj, c int, a interface{}, durable bool) {
 	ColorLog(prpl, msg)
 
 	fmt.Println("--------------------------------------------")
+}
+
+// GenerateUUID generates a uuid and returns the uuid string
+func GenerateUUID() string {
+	return uuid.Must(uuid.NewV4()).String()
 }

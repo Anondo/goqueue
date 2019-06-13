@@ -10,6 +10,7 @@ import (
 
 // SubscribeResp is the struct representing the response body for a subscribe request
 type SubscribeResp struct {
+	ID    string `json:"id"`
 	Name  string `json:"name"`
 	QName string `json:"qname"`
 }
@@ -30,6 +31,6 @@ func SubscribeRequest(w http.ResponseWriter, r *http.Request) {
 		p := strings.Split(r.RemoteAddr, ":")[1]
 		pint, _ := strconv.Atoi(p)
 
-		resources.SubscribeConsumer(h, pint, sr.QName, sr.Name)
+		resources.SubscribeConsumer(h, pint, sr.QName, sr.Name, sr.ID)
 	}
 }
