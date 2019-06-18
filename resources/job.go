@@ -26,13 +26,15 @@ func SendJob(w http.ResponseWriter, qn, wn string) {
 	q := GetQueueByName(qn)
 	if q != nil {
 
+		j := <-q.Jobs
+
 		s := q.GetSubscriber(wn)
 
-		if s == nil {
+		if s == nil { // when worker dies after making request,
+			q.Jobs <- j // TODO: Need a better solution, for requeing for such situation
 			return
 		}
 
-		j := <-q.Jobs
 		if !q.IsTaskRegistered(j.JobName) { // TODO: Tasks are now registered regardless of the subscriber,need to fix this
 			if q.Durable {
 				helper.LogOnError(q.Requeue(), "Could not requeue task")
