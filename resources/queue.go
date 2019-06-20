@@ -133,6 +133,16 @@ func GetQueueByName(qn string) *Queue {
 	return nil
 }
 
+// GetQueueByUUID returns a queue instance matching the queue id
+func GetQueueByUUID(id string) *Queue {
+	for i, q := range QList {
+		if q.ID == id {
+			return &QList[i]
+		}
+	}
+	return nil
+}
+
 // RegisterTasks registers task names for a queue matched by the given queue name
 func RegisterTasks(qn string, tns []string) error {
 	q := GetQueueByName(qn)
