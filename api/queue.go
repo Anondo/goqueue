@@ -98,16 +98,29 @@ func DeleteQueue(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodDelete {
 		qn := chi.URLParam(r, "qname")
 
+		qdr := QueueDeleteResponse{}
+
 		found := false
 		for i, q := range resources.QList {
 			if q.Name == qn {
+				if len(q.Subscribers) > 0 {
+					qdr.RMsg = "Cannot delete a queue with subscribers active!"
+					b, err := json.Marshal(qdr)
+
+					if err != nil {
+						helper.FailOnError(err, "Could not decode response")
+					}
+
+					fmt.Fprintf(w, "%s", string(b))
+					return
+				}
 				resources.QList = append(resources.QList[:i], resources.QList[i+1:]...)
 				resources.RemovePersistedQueue(qn)
 				found = true
 				break
 			}
 		}
-		qdr := QueueDeleteResponse{}
+
 		if found {
 			qdr.RMsg = "Queue Deleted Successfully"
 			helper.ColorLog("\033[35m", fmt.Sprintf("Queue Deleted: %s\n", qn))
