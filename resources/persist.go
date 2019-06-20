@@ -12,7 +12,7 @@ var (
 
 // JSONJob is the correspondent struct of the JOB struct
 type JSONJob struct {
-	ID      int         `json:"id"`
+	ID      string      `json:"id"`
 	JobName string      `json:"job_name"`
 	Args    []Arguments `json:"args"`
 }

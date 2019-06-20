@@ -38,7 +38,7 @@ func Init() {
 // PushTask pushes a new task into the queue
 func (q *Queue) PushTask(jn string, args []Arguments) {
 	j := Job{
-		ID:      len(q.Jobs) + 1,
+		ID:      helper.GenerateUUID(),
 		JobName: jn,
 		Args:    args,
 	}

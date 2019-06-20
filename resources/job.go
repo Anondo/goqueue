@@ -16,7 +16,7 @@ type Arguments struct {
 
 // Job is the struct which represents a JOB queued in the queue
 type Job struct {
-	ID      int         `json:"id"`
+	ID      string      `json:"id"`
 	JobName string      `json:"job_name"`
 	Args    []Arguments `json:"args"`
 }
