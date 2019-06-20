@@ -28,6 +28,10 @@ const (
 	`
 )
 
+var (
+	genertedUUIDs = make(map[string]bool)
+)
+
 // FailOnError is the helper function for checking an error & failing on existance
 func FailOnError(err error, errMsg string) {
 	if err != nil {
@@ -91,5 +95,15 @@ func JobReceiveLog(jn, qn string, nj, c int, a interface{}, durable bool) {
 
 // GenerateUUID generates a uuid and returns the uuid string
 func GenerateUUID() string {
-	return uuid.Must(uuid.NewV4()).String()
+	id := uuid.Must(uuid.NewV4()).String()
+
+	for {
+		if _, exists := genertedUUIDs[id]; exists {
+			id = uuid.Must(uuid.NewV4()).String()
+		}
+		genertedUUIDs[id] = true
+		break
+	}
+
+	return id
 }
