@@ -19,7 +19,7 @@ type JSONJob struct {
 
 // JSONQueue is the correspondent struct of the Queue struct
 type JSONQueue struct {
-	ID                  int           `json:"id"`
+	ID                  string        `json:"id"`
 	Name                string        `json:"name"`
 	Jobs                []Job         `json:"jobs"`
 	Capacity            int           `json:"capacity"`

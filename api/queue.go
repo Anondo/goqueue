@@ -30,7 +30,7 @@ func DeclearQueue(w http.ResponseWriter, r *http.Request) {
 		}
 
 		nq := resources.Queue{
-			ID:       len(resources.QList) + 1,
+			ID:       helper.GenerateUUID(),
 			Name:     qr.Name,
 			Capacity: qr.Capacity,
 			Jobs:     make(chan resources.Job, qr.Capacity),

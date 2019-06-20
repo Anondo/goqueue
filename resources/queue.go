@@ -12,7 +12,7 @@ import (
 
 // Queue represents the task job queue
 type Queue struct {
-	ID                  int
+	ID                  string
 	Name                string
 	Jobs                chan Job
 	Capacity            int
@@ -80,7 +80,7 @@ func (q *Queue) Clear() string {
 // InitDefaultQueue initializes the default queue
 func InitDefaultQueue() {
 	q := Queue{
-		ID:       1,
+		ID:       helper.GenerateUUID(),
 		Name:     viper.GetString("default.queue_name"),
 		Capacity: viper.GetInt("default.queue_capacity"),
 	}
