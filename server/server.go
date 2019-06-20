@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Serve serves the http server for goqueue
 func Serve() error {
 	port := viper.GetInt("port")
 
